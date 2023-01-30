@@ -7,9 +7,8 @@ public class player : MonoBehaviour
 {
     public Rigidbody2D rb;
     public float moveSpeed = 10f;
-    public float stopThreshold = 0.0f;
-    public float distance = 0.5f;
-    public LayerMask wall;
+    public float damping = 0.5f;
+    Vector2 movement;
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -17,24 +16,17 @@ public class player : MonoBehaviour
     }
 
 
-    void Update()
+    private void FixedUpdate()
     {
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
-
-
-        
-
+        movement.x = Input.GetAxisRaw("Horizontal");
+        movement.y = Input.GetAxisRaw("Vertical");
+        movement.Normalize();
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mousePosition.z = 0f;
 
-        rb.MoveRotation(Quaternion.LookRotation(Vector3.forward, mousePosition - transform.position));
-
-        Vector2 direction = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-        direction = direction.normalized;
-
-        Vector2 targetPosition = rb.position + direction * moveSpeed * Time.deltaTime;
-        rb.MovePosition(targetPosition);
+        rb.MoveRotation(Quaternion.LookRotation(Vector3.forward, mousePosition - transform.position));        
+        rb.velocity= new Vector2(movement.x * moveSpeed * Time.fixedDeltaTime,movement.y * moveSpeed * Time.fixedDeltaTime);
+        rb.drag = damping* Time.fixedDeltaTime;
     }
 
 }
