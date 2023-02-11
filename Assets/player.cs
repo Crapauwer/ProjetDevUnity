@@ -5,28 +5,33 @@ using UnityEngine;
 
 public class player : MonoBehaviour
 {
-    public Rigidbody2D rb;
-    public float moveSpeed = 10f;
+    public float sensitivity = 3.0f;
+    public float moveSpeed = 5.0f;
     public float damping = 0.5f;
-    Vector2 movement;
-    void Start()
+
+    private Vector2 movement;
+    private Rigidbody2D rb;
+
+    private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        
+        Cursor.lockState = CursorLockMode.Locked;
     }
-
 
     private void FixedUpdate()
     {
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
         movement.Normalize();
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        mousePosition.z = 0f;
 
-        rb.MoveRotation(Quaternion.LookRotation(Vector3.forward, mousePosition - transform.position));        
-        rb.velocity= new Vector2(movement.x * moveSpeed * Time.fixedDeltaTime,movement.y * moveSpeed * Time.fixedDeltaTime);
-        rb.drag = damping* Time.fixedDeltaTime;
+        float mouseX = Input.GetAxis("Mouse X") * sensitivity;
+        transform.Rotate(Vector3.forward, -mouseX);
+
+        Vector2 movementDirection = Quaternion.Euler(0, 0, transform.eulerAngles.z) * movement.normalized;
+
+        rb.velocity = movementDirection * Time.fixedDeltaTime * moveSpeed;
+        rb.angularVelocity = 0;
+        rb.drag = damping * Time.fixedDeltaTime;
     }
 
 }

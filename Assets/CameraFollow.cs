@@ -4,17 +4,32 @@ using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
-    [SerializeField] private Camera _camera;
-    [SerializeField] private Transform player;
-    [SerializeField] private float threshold;
+    [Range(-5f, 5f)]
+    [SerializeField] private float Distance;
+    
+    private Vector3 Change()
+    {
+        var dis = new Vector3(transform.position.x, transform.position.y + Get(), transform.position.z);
+        return dis;
+    }
+    
+    public float Get()
+    {
+        return Distance;
+    }
 
-    void FixedUpdate()
+    public void Set()
+    {
+        transform.position = Change();
+    }
+
+    public void FixedUpdate()
     {
         
-        Vector3 mousePosition = _camera.ScreenToWorldPoint(Input.mousePosition);
-        Vector3 TargetPos = (player.position + mousePosition)/2f;
-        TargetPos.x = Mathf.Clamp(TargetPos.x, -threshold + player.position.x, threshold + player.position.x);
-        TargetPos.y = Mathf.Clamp(TargetPos.y, -threshold + player.position.y, threshold + player.position.y);
-        this.transform.position = TargetPos;
+    }
+
+    public void Start()
+    {
+        Set();
     }
 }
