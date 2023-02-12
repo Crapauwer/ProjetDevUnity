@@ -17,25 +17,28 @@ public class shooting : MonoBehaviour
     public float bulletForce;
     private int chargeur = 25;
     private bool Rechargement;
+    private bool RechargeClick = false;
     [SerializeField] Image Bullet;
 
 
 
     private void Start()
     {
-        CountBullet.AddComponent<TextMeshPro>();
-        CountBullet.GetComponent<TextMeshPro>().fontSize = 300;
+        
+        CountBullet.GetComponent<TextMeshPro>().fontSize = 3;
 
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
+        if(Cursor.lockState == CursorLockMode.Locked) { 
         CountBullet.GetComponent<TextMeshPro>().text = GetChargeur() + "";
         Bullet.fillAmount = (float)chargeur / 25f;
         
-        if ( Time.fixedTime >= nextFireTime && chargeur == 0) {
+        if ( Time.fixedTime >= nextFireTime && chargeur == 0 || Time.fixedTime >= nextFireTime && RechargeClick) {
             chargeur = 25;
+                RechargeClick= false;
             
         }
 
@@ -61,14 +64,20 @@ public class shooting : MonoBehaviour
                     chargeur--;
                 }
             }
-        } else if(chargeur == 0 && Rechargement) {
+        }else if(chargeur == 0 && Rechargement) {
             nextFireTime = Time.fixedTime + 2.5f;
             Rechargement= false;
 
         }
-        
-    
-}
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                RechargeClick= true;
+                nextFireTime = Time.fixedTime + 2.5f;
+                Rechargement = false;
+            }
+
+        }
+    }
 
     private void Awake()
     {
