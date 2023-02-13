@@ -7,16 +7,17 @@ TagManager:
   - Head
   - Bullet
   - Wall
+  - Body
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - wall
+  - Wall
   - Water
   - UI
   - sol
-  - 
-  - 
+  - bot
+  - OtherSide
   - 
   - 
   - 
@@ -43,4 +44,10 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Character
+    uniqueID: 1475054095
+    locked: 0
+  - name: ALL BUT NOT CHAR
+    uniqueID: 1894376937
     locked: 0

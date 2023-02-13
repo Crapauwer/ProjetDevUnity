@@ -11,8 +11,9 @@ public class player : Singleton<player>
 
     private Vector2 movement;
     public Rigidbody2D rb;
+    CameraFollow cam = new CameraFollow();
 
-    
+
 
     private void Start()
     {

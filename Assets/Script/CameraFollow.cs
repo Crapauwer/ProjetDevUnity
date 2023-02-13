@@ -4,13 +4,14 @@ using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
-    [Range(1f, 10f)]
+    [Range(3f, 20f)]
     [SerializeField] private float Distance;
     [SerializeField] private GameObject Camera;
+    
 
     void Awake()
     {
-        
+        Debug.Log("caca");
         Set(Distance);
     }
 
