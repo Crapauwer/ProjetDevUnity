@@ -3,15 +3,19 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class player : Singleton<player>
+public class player : MonoBehaviour
 {
     public float sensitivity = 3.0f;
-    public float moveSpeed = 5.0f;
+    public float moveSpeed = 3000f;
+    public float moveSpeedCut = 3800f;
+    public float moveSpeedSlowCut = 3000f;
+    public float moveSpeedSlow = 600f;
     public float damping = 0.5f;
 
+    private bool slow;
     private Vector2 movement;
     public Rigidbody2D rb;
-    CameraFollow cam = new CameraFollow();
+    CameraFollow cam;
 
 
 
@@ -24,6 +28,7 @@ public class player : Singleton<player>
 
     private void Update()
     {
+        
         if(Cursor.lockState == CursorLockMode.Locked)
         {
         movement.x = Input.GetAxisRaw("Horizontal");
@@ -35,9 +40,45 @@ public class player : Singleton<player>
 
         Vector2 movementDirection = Quaternion.Euler(0, 0, transform.eulerAngles.z) * movement.normalized;
 
-        rb.velocity = movementDirection * Time.fixedDeltaTime * moveSpeed;
-        rb.angularVelocity = 0;
-        rb.drag = damping * Time.fixedDeltaTime;
+            if(Input.GetKeyDown(KeyCode.LeftShift)) 
+            {
+                
+                slow= true;
+                
+            }
+            if (Input.GetKeyUp(KeyCode.LeftShift))
+            {
+                slow = false; 
+            }
+            
+            if (slow) {
+                if (CycleArme.GetActiveWeap() == "Vandal")
+                {
+                    rb.velocity = movementDirection * Time.fixedDeltaTime * moveSpeedSlow;
+                    
+                }
+                else if (CycleArme.GetActiveWeap() == "Cut")
+                {
+                    rb.velocity = movementDirection * Time.fixedDeltaTime * moveSpeedSlowCut;
+                    
+                }
+                 } else
+            {
+                if (CycleArme.GetActiveWeap() == "Vandal")
+                {
+                    rb.velocity = movementDirection * Time.fixedDeltaTime * moveSpeed;
+                    
+                }
+                else if (CycleArme.GetActiveWeap() == "Cut")
+                {
+                    rb.velocity = movementDirection * Time.fixedDeltaTime * moveSpeedCut;
+                    
+                }
+                
+            }
+            
+            rb.angularVelocity = 0;
+            rb.drag = damping * Time.fixedDeltaTime;
         }
     }
 
@@ -58,6 +99,11 @@ public class player : Singleton<player>
     public void SetSens(float sens)
     {
         sensitivity = sens; 
+    }
+
+    public bool GetSlowPlayer()
+    {
+        return slow;
     }
 }
 

@@ -9,9 +9,9 @@ public class CameraFollow : MonoBehaviour
     [SerializeField] private GameObject Camera;
     
 
-    void Awake()
+    void Start()
     {
-        Debug.Log("caca");
+        
         Set(Distance);
     }
 
@@ -20,8 +20,8 @@ public class CameraFollow : MonoBehaviour
         
         Distance = NewDistance;
         
-        var posplayer = player.Instance.GetPos();
-        var angle = player.Instance.GetRot();
+        var posplayer = GameManager.Instance.GetPlayerPos();
+        var angle = GameManager.Instance.GetPlayerRot();
         
         var q = Quaternion.AngleAxis(angle+90,Vector3.forward);
         var Newpos = posplayer + q * Vector3.right * Distance;

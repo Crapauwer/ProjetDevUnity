@@ -8,6 +8,8 @@ TagManager:
   - Bullet
   - Wall
   - Body
+  - Bot
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -18,8 +20,8 @@ TagManager:
   - sol
   - bot
   - OtherSide
-  - 
-  - 
+  - body
+  - head
   - 
   - 
   - 
@@ -45,9 +47,12 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: ALL BUT NOT CHAR
+    uniqueID: 1894376937
+    locked: 0
   - name: Character
     uniqueID: 1475054095
     locked: 0
-  - name: ALL BUT NOT CHAR
-    uniqueID: 1894376937
+  - name: TEXT
+    uniqueID: 1076121003
     locked: 0

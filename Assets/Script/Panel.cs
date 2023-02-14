@@ -51,6 +51,6 @@ public class Panel : MonoBehaviour
 
     public void SensChange(float sens)
     {
-        player.Instance.SetSens(sens);
+        GameManager.Instance.SetPlayerSens(sens);
     }
 }

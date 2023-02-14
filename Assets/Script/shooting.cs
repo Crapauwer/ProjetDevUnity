@@ -15,10 +15,12 @@ public class shooting : MonoBehaviour
     public float bulletSpread = 5f;
     private float nextFireTime = 0f;
     public float bulletForce;
+    private float TimeReload = 2.5f;
     private int chargeur = 25;
     private bool Rechargement;
     private bool RechargeClick = false;
     [SerializeField] Image Bullet;
+    [SerializeField] Image RechargementCircle;
 
 
 
@@ -32,10 +34,18 @@ public class shooting : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Cursor.lockState == CursorLockMode.Locked) { 
+        RechargementCircle.enabled = false;
+        if (Cursor.lockState == CursorLockMode.Locked) { 
         CountBullet.GetComponent<TextMeshPro>().text = GetChargeur() + "";
         Bullet.fillAmount = (float)chargeur / 25f;
-        
+            if (RechargeClick || chargeur == 0) {
+               
+                RechargementCircle.enabled= true;
+                RechargementCircle.fillAmount = (TimeReload-(nextFireTime-Time.fixedTime))/TimeReload;
+            }
+
+            
+
         if ( Time.fixedTime >= nextFireTime && chargeur == 0 || Time.fixedTime >= nextFireTime && RechargeClick) {
             chargeur = 25;
                 RechargeClick= false;
@@ -65,14 +75,14 @@ public class shooting : MonoBehaviour
                 }
             }
         }else if(chargeur == 0 && Rechargement) {
-            nextFireTime = Time.fixedTime + 2.5f;
+            nextFireTime = Time.fixedTime + TimeReload;
             Rechargement= false;
 
         }
             if (Input.GetKeyDown(KeyCode.R))
             {
                 RechargeClick= true;
-                nextFireTime = Time.fixedTime + 2.5f;
+                nextFireTime = Time.fixedTime + TimeReload;
                 Rechargement = false;
             }
 

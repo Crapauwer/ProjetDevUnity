@@ -78,7 +78,7 @@ MonoBehaviour:
   m_UseRendererSilhouette: 1
   m_CastsShadows: 1
   m_SelfShadows: 1
-  m_ApplyToSortingLayers: e9e5e970
+  m_ApplyToSortingLayers: 000000000f8aeb57e9e5e970
   m_ShapePath:
   - {x: -0.49964768, y: -0.5000193, z: -0.00000012730652}
   - {x: -0.50086933, y: 0.50044787, z: -0.00000012730652}
@@ -86,7 +86,7 @@ MonoBehaviour:
   - {x: 0.4990482, y: -0.5000769, z: -0.00000012730652}
   m_ShapePathHash: -844208044
   m_Mesh: {fileID: 0}
-  m_InstanceId: -699888
+  m_InstanceId: -1316
 --- !u!212 &2684457345993771056
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -126,8 +126,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1894376937
-  m_SortingLayer: 2
-  m_SortingOrder: 10
+  m_SortingLayer: 1
+  m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
