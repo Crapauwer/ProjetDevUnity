@@ -11,22 +11,25 @@ public class shooting : MonoBehaviour
     public GameObject bulletPrefab;
     public GameObject CountBullet;
     public float fireRate = 0.1f;
-    public int bulletCount = 1;
-    public float bulletSpread = 5f;
+    public int bulletRafale = 1;
+    public float bulletSpread = 200f;
     private float nextFireTime = 0f;
     public float bulletForce;
     private float TimeReload = 2.5f;
     private int chargeur = 25;
+    private int MaxChargeur = 25;
     private bool Rechargement;
     private bool RechargeClick = false;
     [SerializeField] Image Bullet;
     [SerializeField] Image RechargementCircle;
-
-
+    [SerializeField] AudioSource audioSource;
+    Dictionary<string, List<float>> WeaponStats = new Dictionary<string, List<float>>();
 
     private void Start()
     {
-        
+        WeaponStats.Add("Vandal", new List<float>() { 2.5f, 0.1f,100f,100f});
+        WeaponStats.Add("Cut", new List<float>() { 0.6f, 0.6f ,1f,1f});
+    
         CountBullet.GetComponent<TextMeshPro>().fontSize = 3;
 
     }
@@ -34,10 +37,14 @@ public class shooting : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        fireRate = WeaponStats[CycleArme.GetActiveWeap()][1];
+        TimeReload = WeaponStats[CycleArme.GetActiveWeap()][0];
+        chargeur = (int)WeaponStats[CycleArme.GetActiveWeap()][3];
+        MaxChargeur = (int)WeaponStats[CycleArme.GetActiveWeap()][2];
         RechargementCircle.enabled = false;
         if (Cursor.lockState == CursorLockMode.Locked) { 
         CountBullet.GetComponent<TextMeshPro>().text = GetChargeur() + "";
-        Bullet.fillAmount = (float)chargeur / 25f;
+        Bullet.fillAmount = (float)chargeur / MaxChargeur;
             if (RechargeClick || chargeur == 0) {
                
                 RechargementCircle.enabled= true;
@@ -47,7 +54,7 @@ public class shooting : MonoBehaviour
             
 
         if ( Time.fixedTime >= nextFireTime && chargeur == 0 || Time.fixedTime >= nextFireTime && RechargeClick) {
-            chargeur = 25;
+                WeaponStats[CycleArme.GetActiveWeap()][3] = MaxChargeur;
                 RechargeClick= false;
             
         }
@@ -57,21 +64,39 @@ public class shooting : MonoBehaviour
             if (Input.GetButton("Fire1") && Time.fixedTime >= nextFireTime)
             {
                 nextFireTime = Time.fixedTime + fireRate;
-                for (int i = 0; i < bulletCount; i++)
+                for (int i = 0; i < bulletRafale; i++)
                 {
-                    // Create a new bullet object
-                    GameObject bullet = Instantiate(bulletPrefab, transform.position, transform.rotation);
+                        UpdateSoundWeap(CycleArme.GetActiveWeap());
+                        audioSource.PlayOneShot(audioSource.clip);
 
-                    // Generate a random angle within the spread
-                    float angle = Random.Range(-bulletSpread / 2, bulletSpread / 2);
+                        if (CycleArme.GetActiveWeap() != "Cut")
+                        {
+                            // Create a new bullet object
+                            GameObject bullet = Instantiate(bulletPrefab, transform.position, transform.rotation);
 
-                    // Rotate the bullet by the random angle
-                    bullet.transform.Rotate(0, 0, angle);
 
-                    // Add force to the bullet in the direction it's facing
-                    bullet.GetComponent<Rigidbody2D>().AddForce(FirePoint.up * bulletForce, ForceMode2D.Impulse);
+                            float angle;
+                            
+                            
+                            if (GameManager.Instance.GetPlayerMov().x > 0.3f || GameManager.Instance.GetPlayerMov().x < -0.3f || GameManager.Instance.GetPlayerMov().y > 0.3f || GameManager.Instance.GetPlayerMov().y < -0.3f)
+                            {
+                                angle = Random.Range(-bulletSpread, bulletSpread);
+                            }
+                            else
+                            {
+                                angle = 0;
+                            }
+                            Debug.Log(angle);
+                            // Rotate the bullet by the random angle
+                            bullet.transform.Rotate(0, 0, angle);
+                            Vector2 directionBullet = bullet.transform.up;
+                            // Add force to the bullet in the direction it's facing
+                            bullet.GetComponent<Rigidbody2D>().AddForce(directionBullet * bulletForce, ForceMode2D.Impulse);
+                        }
+                        
                     Rechargement = true;
-                    chargeur--;
+                        chargeur--;
+                        WeaponStats[CycleArme.GetActiveWeap()][3] = chargeur ;
                 }
             }
         }else if(chargeur == 0 && Rechargement) {
@@ -103,6 +128,22 @@ public class shooting : MonoBehaviour
 
     public int GetChargeur()
     {
-        return chargeur;    
+        return (int)WeaponStats[CycleArme.GetActiveWeap()][3];    
     }
+
+    public void UpdateSoundWeap(string wep)
+    {
+        switch (wep)
+        {
+            case "Vandal":
+                audioSource.clip = Resources.Load<AudioClip>("VandalTap");
+                break;
+
+            case "Cut":
+                audioSource.clip = Resources.Load<AudioClip>("Cut"+Random.Range(1,6));
+                break;
+        }
+        
+    }
+
 }

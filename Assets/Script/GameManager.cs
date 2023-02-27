@@ -25,6 +25,11 @@ public class GameManager : Singleton<GameManager>
     {
         return player.GetPos();
     }
+
+    public Vector2 GetPlayerPos2()
+    {
+        return player.GetPos2();
+    }
     public float GetPlayerRot()
     {
         return player.transform.rotation.eulerAngles.z;
@@ -62,8 +67,12 @@ public class GameManager : Singleton<GameManager>
     { 
     return player.rb.velocity;
     }
+    public Vector2 GetPlayerMov()
+    {
+        return player.GetAxis();
+    }
 
-    
-    
+
+
 
 }

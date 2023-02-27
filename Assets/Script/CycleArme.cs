@@ -7,7 +7,9 @@ public class CycleArme : MonoBehaviour
 {
     [SerializeField] Image Vandal;
     [SerializeField] Image Cut;
-
+    [SerializeField] GameObject VandalG;
+    [SerializeField] GameObject CutG;
+    [SerializeField] AudioSource audioSource;
 
     private string[] Inventory = { "Vandal" , "Cut" };
     private static string ActiveWeapon = "Vandal";
@@ -16,17 +18,29 @@ public class CycleArme : MonoBehaviour
     {
         Vandal.enabled= true;
         Cut.enabled = false;
+        CutG.SetActive(false);
+        VandalG.SetActive(true);
 
     }
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            ActiveWeapon = "Vandal";
+            if (ActiveWeapon != "Vandal")
+            {
+                MakeSound("TakeVandal");
+                ActiveWeapon = UpdateCycle("Vandal");
+            }
+            
         }
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-            ActiveWeapon = "Cut";
+            if (ActiveWeapon != "Cut")
+            {
+                MakeSound("knifeout");
+                ActiveWeapon = UpdateCycle("Cut");
+            }
+            
         }
     }
     private void FixedUpdate()
@@ -34,23 +48,37 @@ public class CycleArme : MonoBehaviour
         switch (ActiveWeapon){
             case "Vandal":
                 Vandal.enabled = true;
-                Cut.enabled = false;
+                VandalG.SetActive(true);
                 break;
 
             case "Cut":
-                Vandal.enabled = false;
                 Cut.enabled = true;
-
+                CutG.SetActive(true);
                 break;
         }
         }
 
+    public void ResetEnableIventory()
+    {
+        Vandal.enabled = false;
+        VandalG.SetActive(false);
+        Cut.enabled = false;
+        CutG.SetActive(false);
+    }
+    public string UpdateCycle(string weap)
+    {
+        ResetEnableIventory();
+        return weap;
+    }
     public static string GetActiveWeap()
     {
         return ActiveWeapon;
     }
 
-
-        
+    public void MakeSound(string name)
+    {
+        audioSource.clip = Resources.Load<AudioClip>(name);
+        audioSource.PlayOneShot(audioSource.clip);
+    }
     }
 
