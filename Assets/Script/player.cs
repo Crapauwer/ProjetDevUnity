@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.IO.Pipes;
 using Unity.VisualScripting;
 using UnityEngine;
+using Unity.Netcode;
 
-public class player : MonoBehaviour
+public class player : NetworkBehaviour
 {
     public float sensitivity = 10f;
     public float sensitivityMovement = 3.0f;
@@ -31,6 +32,7 @@ public class player : MonoBehaviour
 
     private void Update()
     {
+        if(IsOwner) { return; }
         
         if(Cursor.lockState == CursorLockMode.Locked)
         {
