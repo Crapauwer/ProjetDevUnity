@@ -49,7 +49,7 @@ public class crosshair : MonoBehaviour
         GameManager gm = GameManager.Instance;
         Mesh mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
-        int layerMask = ~(1 << LayerMask.NameToLayer("Default"));
+        int layerMask =/* ~(1 << */LayerMask.GetMask("Default");
         RaycastHit2D hit = Physics2D.Raycast(new Vector2(gm.GetPlayerPos2().x, gm.GetPlayerPos2().y) , transform.up, layerMask);
         Vector3[] vertices = new Vector3[4];
         Vector2[] uv = new Vector2[4];
@@ -58,7 +58,7 @@ public class crosshair : MonoBehaviour
         vertices[0] = new Vector3(-1, 0);
         if (hit.collider != null)
         {
-            
+            System.Console.WriteLine("HIT");
             vertices[1] = new Vector3(hit.point.x-1, hit.point.y);
             vertices[2] = new Vector3(hit.point.x+1, hit.point.y);
         }
