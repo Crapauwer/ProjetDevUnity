@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine;
+using System.Globalization;
+using Unity.Netcode;
 
-public class shooting : MonoBehaviour
+public class shooting : NetworkBehaviour
 {
     public static shooting instance;
     public Transform FirePoint;
@@ -20,30 +22,40 @@ public class shooting : MonoBehaviour
     private int MaxChargeur = 25;
     private bool Rechargement;
     private bool RechargeClick = false;
-    [SerializeField] Image Bullet;
-    [SerializeField] Image RechargementCircle;
-    [SerializeField] AudioSource audioSource;
+    public Image Bullet;
+    public Image RechargementCircle;
+    public AudioSource audioSource;
     Dictionary<string, List<float>> WeaponStats = new Dictionary<string, List<float>>();
 
+    
     private void Start()
     {
-        WeaponStats.Add("Vandal", new List<float>() { 2.5f, 0.1f,100f,100f});
+        WeaponStats.Add("Vandal", new List<float>() { 2.5f, 0.1f,25f,25f});
         WeaponStats.Add("Cut", new List<float>() { 0.6f, 0.6f ,1f,1f});
-    
-        CountBullet.GetComponent<TextMeshPro>().fontSize = 3;
+
 
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
+        if (!IsOwner)
+        {
+            return;
+        }
+
         fireRate = WeaponStats[CycleArme.GetActiveWeap()][1];
         TimeReload = WeaponStats[CycleArme.GetActiveWeap()][0];
         chargeur = (int)WeaponStats[CycleArme.GetActiveWeap()][3];
         MaxChargeur = (int)WeaponStats[CycleArme.GetActiveWeap()][2];
         RechargementCircle.enabled = false;
-        if (Cursor.lockState == CursorLockMode.Locked) { 
-        CountBullet.GetComponent<TextMeshPro>().text = GetChargeur() + "";
+        if (Cursor.lockState == CursorLockMode.Locked) {
+            for (int i = 0;i < CountBullet.GetComponents<Component>().Length; i++)
+            {
+               
+            }
+            
+        CountBullet.GetComponent<TextMeshProUGUI>().text = GetChargeur() + "";
         Bullet.fillAmount = (float)chargeur / MaxChargeur;
             if (RechargeClick || chargeur == 0) {
                
@@ -73,12 +85,12 @@ public class shooting : MonoBehaviour
                         {
                             // Create a new bullet object
                             GameObject bullet = Instantiate(bulletPrefab, transform.position, transform.rotation);
-
+                            bullet.GetComponent<NetworkObject>().Spawn(true);
 
                             float angle;
+
                             
-                            
-                            if (GameManager.Instance.GetPlayerMov().x > 0.3f || GameManager.Instance.GetPlayerMov().x < -0.3f || GameManager.Instance.GetPlayerMov().y > 0.3f || GameManager.Instance.GetPlayerMov().y < -0.3f)
+                            if (GameManager.Instance.GetPlayerMov(gameObject.GetComponent<player>()).x > 0.3f || GameManager.Instance.GetPlayerMov(gameObject.GetComponent<player>()).x < -0.3f || GameManager.Instance.GetPlayerMov(gameObject.GetComponent<player>()).y > 0.3f || GameManager.Instance.GetPlayerMov(gameObject.GetComponent<player>()).y < -0.3f)
                             {
                                 angle = Random.Range(-bulletSpread, bulletSpread);
                             }
@@ -86,12 +98,15 @@ public class shooting : MonoBehaviour
                             {
                                 angle = 0;
                             }
-                            Debug.Log(angle);
+                            
                             // Rotate the bullet by the random angle
                             bullet.transform.Rotate(0, 0, angle);
                             Vector2 directionBullet = bullet.transform.up;
                             // Add force to the bullet in the direction it's facing
                             bullet.GetComponent<Rigidbody2D>().AddForce(directionBullet * bulletForce, ForceMode2D.Impulse);
+                            
+
+
                         }
                         
                     Rechargement = true;
@@ -145,5 +160,6 @@ public class shooting : MonoBehaviour
         }
         
     }
+    
 
 }

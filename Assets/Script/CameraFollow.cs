@@ -20,8 +20,8 @@ public class CameraFollow : MonoBehaviour
         
         Distance = NewDistance;
         
-        var posplayer = GameManager.Instance.GetPlayerPos();
-        var angle = GameManager.Instance.GetPlayerRot();
+        var posplayer = GameManager.Instance.GetPlayerPos(gameObject.GetComponent<player>());
+        var angle = GameManager.Instance.GetPlayerRot(gameObject.GetComponent<player>());
         
         var q = Quaternion.AngleAxis(angle+90,Vector3.forward);
         var Newpos = posplayer + q * Vector3.right * Distance;
@@ -36,6 +36,7 @@ public class CameraFollow : MonoBehaviour
     public void Set(float NewDistance)
     {
         Camera.transform.position = Change(NewDistance);
+        Camera.transform.position = new Vector3(Camera.transform.position.x, Camera.transform.position.y,-5f);
     }
 
     

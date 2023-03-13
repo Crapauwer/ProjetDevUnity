@@ -15,7 +15,7 @@ public class player : NetworkBehaviour
     public float moveSpeedSlow = 600f;
     public float damping = 0.5f;
 
-    private bool slow;
+    private bool slow = false;
     private Vector2 movement;
     public Rigidbody2D rb;
     CameraFollow cam;
@@ -32,12 +32,16 @@ public class player : NetworkBehaviour
 
     private void Update()
     {
-        if(IsOwner) { return; }
+        if (!IsOwner)
+        {
+            return; }
         
-        if(Cursor.lockState == CursorLockMode.Locked)
+  
+        if (Cursor.lockState == CursorLockMode.Locked)
         {
         movement.x = Input.GetAxis("Horizontal");
         movement.y = Input.GetAxis("Vertical");
+            
             float inputMagnitude = Mathf.Clamp(movement.magnitude, 0f, 1f);
             float targetMagnitude = Mathf.Lerp(0f, 1f, Mathf.Pow(inputMagnitude, sensitivityMovement));
 

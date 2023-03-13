@@ -50,7 +50,7 @@ public class crosshair : MonoBehaviour
         Mesh mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
         int layerMask =/* ~(1 << */LayerMask.GetMask("Default");
-        RaycastHit2D hit = Physics2D.Raycast(new Vector2(gm.GetPlayerPos2().x, gm.GetPlayerPos2().y) , transform.up, layerMask);
+        RaycastHit2D hit = Physics2D.Raycast(new Vector2(gm.GetPlayerPos2(gameObject.GetComponent<player>()).x, gm.GetPlayerPos2(gameObject.GetComponent<player>()).y) , transform.up, layerMask);
         Vector3[] vertices = new Vector3[4];
         Vector2[] uv = new Vector2[4];
         int[] triangles = new int[6];

@@ -2,34 +2,51 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Unity.Netcode;
 
-public class CycleArme : MonoBehaviour
+public class CycleArme : NetworkBehaviour
 {
-    [SerializeField] Image Vandal;
-    [SerializeField] Image Cut;
+    public Image Vandal;
+    public Image Cut;
     [SerializeField] GameObject VandalG;
     [SerializeField] GameObject CutG;
     [SerializeField] AudioSource audioSource;
+    private bool OnlyOne = false;
 
     private string[] Inventory = { "Vandal" , "Cut" };
     private static string ActiveWeapon = "Vandal";
 
     private void Start()
     {
-        Vandal.enabled= true;
-        Cut.enabled = false;
-        CutG.SetActive(false);
-        VandalG.SetActive(true);
+        
 
     }
     private void Update()
     {
+        if (!IsOwner)
+        {
+            return;
+        }
+
+        if(Vandal != null && OnlyOne == false)
+        {
+            Vandal.enabled = true;
+            Cut.enabled = false;
+            CutG.SetActive(false);
+            VandalG.SetActive(true);
+            OnlyOne = true;
+        }
+
+        
+
+        
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             if (ActiveWeapon != "Vandal")
             {
                 MakeSound("TakeVandal");
                 ActiveWeapon = UpdateCycle("Vandal");
+                SyncServerRpc();
             }
             
         }
@@ -39,13 +56,12 @@ public class CycleArme : MonoBehaviour
             {
                 MakeSound("knifeout");
                 ActiveWeapon = UpdateCycle("Cut");
+                SyncServerRpc();
             }
             
         }
-    }
-    private void FixedUpdate()
-    {
-        switch (ActiveWeapon){
+        switch (ActiveWeapon)
+        {
             case "Vandal":
                 Vandal.enabled = true;
                 VandalG.SetActive(true);
@@ -56,7 +72,9 @@ public class CycleArme : MonoBehaviour
                 CutG.SetActive(true);
                 break;
         }
-        }
+        
+    }
+
 
     public void ResetEnableIventory()
     {
@@ -80,5 +98,11 @@ public class CycleArme : MonoBehaviour
         audioSource.clip = Resources.Load<AudioClip>(name);
         audioSource.PlayOneShot(audioSource.clip);
     }
+
+    [ServerRpc]
+    private void SyncServerRpc()
+    {
+        GameManager.Instance.SetActiveWeaponPlayer(GameObject.Find("Player" + (OwnerClientId + 1)), ActiveWeapon);
     }
+}
 

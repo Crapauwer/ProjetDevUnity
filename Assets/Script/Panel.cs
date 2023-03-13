@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Unity.Netcode;
 
-public class Panel : MonoBehaviour
+public class Panel : NetworkBehaviour
 {
     public GameObject option;
     public bool visible = false;
@@ -15,11 +16,15 @@ public class Panel : MonoBehaviour
 
     void Update()
     {
+        if (!IsOwner)
+        {
+            return;
+        }
         if (Input.GetKeyDown(KeyCode.Escape))
         { 
             if (!visible)
             {
-                Cursor.lockState = CursorLockMode.Confined;
+                Cursor.lockState = CursorLockMode.None;
             }
             else
             {
@@ -51,6 +56,6 @@ public class Panel : MonoBehaviour
 
     public void SensChange(float sens)
     {
-        GameManager.Instance.SetPlayerSens(sens);
+        GameManager.Instance.SetPlayerSens(sens, gameObject.transform.parent.transform.Find("PlayerBody").GetComponent<player>());
     }
 }

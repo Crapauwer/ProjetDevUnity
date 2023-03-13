@@ -20,15 +20,16 @@ public class FootStep : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (GameManager.Instance.GetPlayerSlow())
+
+        if (GameManager.Instance.GetPlayerSlow(this.transform.parent.GetComponent<player>()))
         {
             initialPosition = transform.position;
             initialPositionforStraf = transform.position;
             
         }
-            if (!GameManager.Instance.GetPlayerSlow()) 
+            if (!GameManager.Instance.GetPlayerSlow(this.transform.parent.GetComponent<player>())) 
         {
-            if(GameManager.Instance.GetPlayerVel() == new Vector2(0,0))
+            if(GameManager.Instance.GetPlayerVel(this.transform.parent.GetComponent<player>()) == new Vector2(0,0))
             {
                 
                 initialPositionforStraf = transform.position;
